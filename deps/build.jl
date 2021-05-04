@@ -106,7 +106,7 @@ end
 
 # Get the data
 
-Base.lowercase(::Type{Missing}) = Missing
+lwnotmis(n) = ismissing(n) ? Missing : lowercase(n)
 
 @info "Building the names file"
 ncbi_names_file_in = joinpath(taxpath, "dump", "names.dmp")
@@ -115,7 +115,7 @@ ncbi_names = DataFrames.DataFrame(tax_id=Int[], name=String[], unique_name=Union
 names_df = _build_arrow_file(ncbi_names, ncbi_names_file_in)
 names_df.class = Int.(names_df.class)
 names_df.name = lowercase.(names_df.name)
-names_df.unique_name = lowercase.(names_df.unique_name)
+names_df.unique_name = lwnotmis.(names_df.unique_name)
 Arrow.write(ncbi_names_file_out, names_df)
 names_df = nothing
 GC.gc()
