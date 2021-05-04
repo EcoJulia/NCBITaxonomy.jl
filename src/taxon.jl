@@ -3,10 +3,10 @@ _sciname_from_taxid(id::Integer) = _sciname_from_taxid(NCBITaxonomy.names_table,
 
 function _id_from_name(df::DataFrame, name::AbstractString; strict::Bool=true, dist::Type{SD}=Levenshtein) where {SD <: StringDistance}
     if strict
-        position = findfirst(isequal(name), df.name)
+        position = findfirst(isequal(lowercase(name)), df.name)
         return isnothing(position) ? nothing : df.tax_id[position]
     else
-        correct_name, position = findnearest(name, df.name, dist())
+        correct_name, position = findnearest(lowercase(name), df.name, dist())
         return df.tax_id[position]
     end
 end
